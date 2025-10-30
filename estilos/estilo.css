@@ -66,12 +66,14 @@ body {
     font-size: 1rem;
 }
 
-/* Main Content */
 main {
     margin-left: var(--sidebar-width);
-    min-height: 100vh;
-    background-color: #ffffff;
     transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    background-image: url("../imagens/fundo-gestao-barbearia.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 main.expanded {
@@ -105,7 +107,7 @@ header {
     font-weight: 600;
     font-size: 0.875rem;
     border-bottom: 2px solid #dee2e6;
-    padding: 0.875rem 1rem;
+    padding: 0.875rem 3.5rem;
 }
 
 .table tbody td {
@@ -226,3 +228,4 @@ header {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+

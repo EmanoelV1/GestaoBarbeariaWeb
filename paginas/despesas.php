@@ -1,53 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despesas - Barbearia ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../estilos/estilo.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
-        <nav class="sidebar bg-light border-end">
-            <div class="sidebar-header p-3 border-bottom">
-                <h5 class="mb-1 fw-semibold">Barbearia ERP</h5>
-                <small class="text-muted">Sistema de Gestão</small>
-            </div>
-            <div class="p-3">
-                <h6 class="text-muted text-uppercase small mb-3">Menu Principal</h6>
-                <ul class="nav flex-column gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            Agendamentos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="produtos.html">
-                            <i class="bi bi-box-seam me-2"></i>
-                            Produtos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="despesas.html">
-                            <i class="bi bi-receipt me-2"></i>
-                            Despesas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="relatorios.html">
-                            <i class="bi bi-bar-chart me-2"></i>
-                            Relatórios
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <!-- Componente Sidebar -->
+        <?php include '../componentes/menu.php'; ?>
 
-        <!-- Main Content -->
         <main class="flex-fill">
             <header class="bg-white border-bottom p-3">
                 <button class="btn btn-light btn-sm" id="sidebarToggle">
@@ -153,6 +120,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
 </body>
+
 </html>

@@ -1,51 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamentos - Barbearia ERP</title>
+    <title>Agendamentos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+    <link href="../estilos/estilo.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="d-flex">
-        <!-- Sidebar -->
-        <nav class="sidebar bg-light border-end">
-            <div class="sidebar-header p-3 border-bottom">
-                <h5 class="mb-1 fw-semibold">Barbearia ERP</h5>
-                <small class="text-muted">Sistema de Gestão</small>
-            </div>
-            <div class="p-3">
-                <h6 class="text-muted text-uppercase small mb-3">Menu Principal</h6>
-                <ul class="nav flex-column gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            Agendamentos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="produtos.html">
-                            <i class="bi bi-box-seam me-2"></i>
-                            Produtos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="despesas.html">
-                            <i class="bi bi-receipt me-2"></i>
-                            Despesas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="relatorios.html">
-                            <i class="bi bi-bar-chart me-2"></i>
-                            Relatórios
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <!-- Componente Sidebar -->
+        <?php include '../componentes/menu.php'; ?>
 
         <!-- Main Content -->
         <main class="flex-fill">
@@ -61,16 +29,34 @@
                     <p class="text-muted small">Gerencie os agendamentos dos clientes</p>
                 </div>
 
+                <?php
+
+                require_once '../framework/enums/enumeradores.php';
+
+                foreach (AppointmentStatus::cases() as $status) {
+
+                    echo "<option value='{$status->value}'>";
+                    echo $status->description();
+                    echo "</option>";
+                }
+                ?>
+
                 <div class="table-container">
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th>Data/Hora</th>
-                                <th>Cliente</th>
-                                <th>Serviço</th>
-                                <th>Telefone</th>
+                                <th>D/H do Agendamento</th>
+                                <th>D/H Término do Agendamento</th>
+                                <th>Nome do Cliente</th>
+                                <th>Telefone do Cliente</th>
+                                <th>Funcionário</th>
                                 <th>Status</th>
-                                <th class="text-end">Ações</th>
+                                <th>Valor</th>
+                                <th>Tipo de Pagamento</th>
+                                <th>Pago em</th>
+                                <th>Criado em</th>
+                                <th>Atualizado em</th>
+                                <th class="text-end">Observações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,6 +81,49 @@
                                     </button>
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="align-middle">
+                                    <small>30/10/2025 às 09:00</small>
+                                </td>
+                                <td class="align-middle">João Silva</td>
+                                <td class="align-middle">Corte + Barba</td>
+                                <td class="align-middle text-muted">
+                                    <small>(11) 98765-4321</small>
+                                </td>
+                                <td class="align-middle">
+                                    <span class="badge bg-warning text-dark">Pendente</span>
+                                </td>
+                                <td class="text-end align-middle">
+                                    <button class="btn btn-primary btn-sm me-1">
+                                        <i class="bi bi-check-lg"></i> Aprovar
+                                    </button>
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x-lg"></i> Rejeitar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle">
+                                    <small>30/10/2025 às 09:00</small>
+                                </td>
+                                <td class="align-middle">João Silva</td>
+                                <td class="align-middle">Corte + Barba</td>
+                                <td class="align-middle text-muted">
+                                    <small>(11) 98765-4321</small>
+                                </td>
+                                <td class="align-middle">
+                                    <span class="badge bg-warning text-dark">Pendente</span>
+                                </td>
+                                <td class="text-end align-middle">
+                                    <button class="btn btn-primary btn-sm me-1">
+                                        <i class="bi bi-check-lg"></i> Aprovar
+                                    </button>
+                                    <button class="btn btn-danger btn-sm">
+                                        <i class="bi bi-x-lg"></i> Rejeitar
+                                    </button>
+                                </td>
+                            </tr>
+
                             <tr>
                                 <td class="align-middle">
                                     <small>30/10/2025 às 10:00</small>
@@ -159,6 +188,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
 </body>
+
 </html>
