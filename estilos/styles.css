@@ -364,7 +364,9 @@ body {
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
+    max-height: 80vh; /* limita altura a 80% da viewport */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* permite rolar conteúdo interno */
 }
 
 .modal-header {
@@ -430,6 +432,15 @@ form {
     padding: 1.5rem;
     border-top: 1px solid hsl(var(--border));
 }
+
+.input-search {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid hsl(var(--border));
+    font-size: 1rem;
+    width: 200px;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -2,13 +2,10 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BarberShop ERP - Despesas</title>
-
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../estilos/styles.css">
 </head>
 
 <body>
@@ -83,7 +80,40 @@
             </div>
         </main>
     </div>
-    <script src="despesas.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('expense-modal');
+            const addExpenseBtn = document.getElementById('add-expense-btn');
+            const closeModalBtn = document.getElementById('close-modal');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const expenseForm = document.getElementById('expense-form');
+
+            addExpenseBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            function closeModal() {
+                modal.classList.remove('active');
+                expenseForm.reset();
+            }
+
+            expenseForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Aqui você pode processar o envio da despesa
+
+                // Após processar, fecha o modal e limpa o form:
+                closeModal();
+            });
+        });
+    </script>
+
 </body>
 
 </html>
