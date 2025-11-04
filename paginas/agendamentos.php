@@ -1,193 +1,128 @@
+<?php
+require_once __DIR__ . '/../framework/enums/enumeradores.php';
+require_once __DIR__ . '/../framework/entidades/Appointment.php'; // ajuste o caminho conforme seu projeto
+
+// Mapeia o status do enum a partir de cada objeto vindo do json
+// Convertendo para o enum do php
+function mapStatusEnum(string $statusStr): AppointmentStatus
+{
+    return match (strtolower($statusStr)) {
+        'pending' => AppointmentStatus::Pending,
+        'confirmed' => AppointmentStatus::Confirmed,
+        'completed' => AppointmentStatus::Completed,
+        default => AppointmentStatus::Pending,
+    };
+}
+
+// Mapeia o retorno do json para a classe Appointment do php
+function mapArrayToAppointment(array $data): Appointment
+{
+    $appointment = new Appointment();
+
+    $appointment->id = $data['id'] ?? 0;
+    $appointment->clientName = $data['clientName'] ?? null;
+    $appointment->observations = $data['observations'] ?? '';
+
+    if (!empty($data['appointmentDateTime'])) {
+        $appointment->appointmentDateTime = new DateTime($data['appointmentDateTime']);
+    } else {
+        $appointment->appointmentDateTime = new DateTime();
+    }
+    $appointment->appointmentEndDateTime = (clone $appointment->appointmentDateTime)->modify('+1 hour');
+
+    $appointment->status = isset($data['status']) ? mapStatusEnum($data['status']) : AppointmentStatus::Pending;
+    $appointment->servicePrice = $data['servicePrice'] ?? 0.0;
+
+    return $appointment;
+}
+
+$apiUrl = 'http://localhost:5156/api/appointments';
+$responseJson = file_get_contents($apiUrl);
+if ($responseJson === false) {
+    die('Erro ao acessar a API de Agendamentos.');
+}
+$responseData = json_decode($responseJson, true);
+if ($responseData === null) {
+    die('Erro ao decodificar resposta JSON da API.');
+}
+
+$appointmentsArray = $responseData['appointments'] ?? [];
+
+$appointments = [];
+foreach ($appointmentsArray as $data) {
+    $appointments[] = mapArrayToAppointment($data);
+}
+
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$itemsPerPage = 5;
+$totalItems = count($appointments);
+$totalPages = (int)ceil($totalItems / $itemsPerPage);
+
+$startIndex = ($page - 1) * $itemsPerPage;
+$appointmentsPage = array_slice($appointments, $startIndex, $itemsPerPage);
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamentos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="../estilos/estilo.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BarberShop ERP - Agendamentos</title>
+    <link rel="stylesheet" href="../estilos/styles.css" />
 </head>
 
 <body>
-    <div class="d-flex">
-        <!-- Componente Sidebar -->
-        <?php include '../componentes/menu.php'; ?>
+    <div class="container">
 
-        <!-- Main Content -->
-        <main class="flex-fill">
-            <header class="bg-white border-bottom p-3">
-                <button class="btn btn-light btn-sm" id="sidebarToggle">
-                    <i class="bi bi-list"></i>
-                </button>
-            </header>
+        <?php include '../componentes/menu.php' ?>
 
-            <div class="content p-4">
-                <div class="mb-4">
-                    <h2 class="mb-1">Agendamentos</h2>
-                    <p class="text-muted small">Gerencie os agendamentos dos clientes</p>
-                </div>
-
-                <?php
-
-                require_once '../framework/enums/enumeradores.php';
-
-                foreach (AppointmentStatus::cases() as $status) {
-
-                    echo "<option value='{$status->value}'>";
-                    echo $status->description();
-                    echo "</option>";
-                }
-                ?>
-
-                <div class="table-container">
-                    <table class="table table-hover">
-                        <thead class="table-light">
+        <main class="main-content">
+            <div class="view-header">
+                <h2>Agendamentos</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Serviço (Preço)</th>
+                            <th>Data/Hora</th>
+                            <th>Status</th>
+                            <th>Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($appointmentsPage as $apt): ?>
                             <tr>
-                                <th>D/H do Agendamento</th>
-                                <th>D/H Término do Agendamento</th>
-                                <th>Nome do Cliente</th>
-                                <th>Telefone do Cliente</th>
-                                <th>Funcionário</th>
-                                <th>Status</th>
-                                <th>Valor</th>
-                                <th>Tipo de Pagamento</th>
-                                <th>Pago em</th>
-                                <th>Criado em</th>
-                                <th>Atualizado em</th>
-                                <th class="text-end">Observações</th>
+                                <td><?= $apt->id ?></td>
+                                <td><?= htmlspecialchars($apt->clientName) ?></td>
+                                <td>R$ <?= number_format($apt->servicePrice, 2, ',', '.') ?></td>
+                                <td><?= $apt->appointmentDateTime->format('d/m/Y H:i') ?></td>
+                                <td><?= htmlspecialchars($apt->status->getDescription()) ?></td>
+                                <td><?= htmlspecialchars($apt->observations) ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="align-middle">
-                                    <small>30/10/2025 às 09:00</small>
-                                </td>
-                                <td class="align-middle">João Silva</td>
-                                <td class="align-middle">Corte + Barba</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-4321</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <button class="btn btn-primary btn-sm me-1">
-                                        <i class="bi bi-check-lg"></i> Aprovar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-x-lg"></i> Rejeitar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle">
-                                    <small>30/10/2025 às 09:00</small>
-                                </td>
-                                <td class="align-middle">João Silva</td>
-                                <td class="align-middle">Corte + Barba</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-4321</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <button class="btn btn-primary btn-sm me-1">
-                                        <i class="bi bi-check-lg"></i> Aprovar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-x-lg"></i> Rejeitar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle">
-                                    <small>30/10/2025 às 09:00</small>
-                                </td>
-                                <td class="align-middle">João Silva</td>
-                                <td class="align-middle">Corte + Barba</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-4321</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <button class="btn btn-primary btn-sm me-1">
-                                        <i class="bi bi-check-lg"></i> Aprovar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-x-lg"></i> Rejeitar
-                                    </button>
-                                </td>
-                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
 
-                            <tr>
-                                <td class="align-middle">
-                                    <small>30/10/2025 às 10:00</small>
-                                </td>
-                                <td class="align-middle">Carlos Santos</td>
-                                <td class="align-middle">Corte</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-1234</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-success">Aprovado</span>
-                                </td>
-                                <td class="text-end align-middle"></td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle">
-                                    <small>30/10/2025 às 11:00</small>
-                                </td>
-                                <td class="align-middle">Pedro Oliveira</td>
-                                <td class="align-middle">Barba</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-5678</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <button class="btn btn-primary btn-sm me-1">
-                                        <i class="bi bi-check-lg"></i> Aprovar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-x-lg"></i> Rejeitar
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle">
-                                    <small>31/10/2025 às 14:00</small>
-                                </td>
-                                <td class="align-middle">Lucas Costa</td>
-                                <td class="align-middle">Corte + Barba</td>
-                                <td class="align-middle text-muted">
-                                    <small>(11) 98765-9012</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-warning text-dark">Pendente</span>
-                                </td>
-                                <td class="text-end align-middle">
-                                    <button class="btn btn-primary btn-sm me-1">
-                                        <i class="bi bi-check-lg"></i> Aprovar
-                                    </button>
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="bi bi-x-lg"></i> Rejeitar
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="pagination" id="appointments-pagination">
+                <button class="btn btn-secondary" <?= $page === 1 ? 'disabled' : '' ?> onclick="location.href='?page=<?= $page - 1 ?>'">Anterior</button>
+
+                <?php for ($p = 1; $p <= $totalPages; $p++): ?>
+                    <?php if ($p == $page): ?>
+                        <button class="btn btn-primary active" disabled><?= $p ?></button>
+                    <?php else: ?>
+                        <button class="btn btn-secondary" onclick="location.href='?page=<?= $p ?>'"><?= $p ?></button>
+                    <?php endif; ?>
+                <?php endfor; ?>
+
+                <button class="btn btn-secondary" <?= $page === $totalPages ? 'disabled' : '' ?> onclick="location.href='?page=<?= $page + 1 ?>'">Próximo</button>
             </div>
         </main>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

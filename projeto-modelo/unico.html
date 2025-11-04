@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop ERP - Sistema de Gestão</title>
+    <meta name="description" content="Sistema completo de gestão para barbearias com controle de agendamentos, produtos, despesas e relatórios financeiros">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">BarberShop ERP</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-button active" data-view="appointments">
+                    <span class="icon">📅</span>
+                    Agendamentos
+                </button>
+                <button class="nav-button" data-view="products">
+                    <span class="icon">📦</span>
+                    Produtos
+                </button>
+                <button class="nav-button" data-view="expenses">
+                    <span class="icon">💰</span>
+                    Despesas
+                </button>
+                <button class="nav-button" data-view="reports">
+                    <span class="icon">📊</span>
+                    Relatórios
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Appointments View -->
+            <div id="appointments-view" class="view active">
+                <div class="view-header">
+                    <h2>Agendamentos</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Data/Hora</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointments-tbody">
+                            <!-- Data will be inserted by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="appointments-pagination">
+                    <!-- Pagination will be inserted by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Products View -->
+            <div id="products-view" class="view">
+                <div class="view-header">
+                    <h2>Produtos</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Categoria</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody">
+                            <!-- Data will be inserted by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="products-pagination">
+                    <!-- Pagination will be inserted by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Expenses View -->
+            <div id="expenses-view" class="view">
+                <div class="view-header">
+                    <h2>Despesas</h2>
+                    <button class="btn btn-primary" id="add-expense-btn">Adicionar Despesa</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-tbody">
+                            <!-- Data will be inserted by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="expenses-pagination">
+                    <!-- Pagination will be inserted by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reports-view" class="view">
+                <div class="view-header">
+                    <h2>Relatórios Financeiros</h2>
+                </div>
+                <div class="reports-container">
+                    <div class="report-card">
+                        <div class="report-card-header">
+                            <h3>Faturamento Total</h3>
+                            <span class="icon">💵</span>
+                        </div>
+                        <div class="report-card-value">R$ 45.750,00</div>
+                        <div class="report-card-footer">+12% em relação ao mês anterior</div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-card-header">
+                            <h3>Despesas Totais</h3>
+                            <span class="icon">💸</span>
+                        </div>
+                        <div class="report-card-value">R$ 18.300,00</div>
+                        <div class="report-card-footer">+5% em relação ao mês anterior</div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-card-header">
+                            <h3>Lucro Líquido</h3>
+                            <span class="icon">📈</span>
+                        </div>
+                        <div class="report-card-value">R$ 27.450,00</div>
+                        <div class="report-card-footer">+18% em relação ao mês anterior</div>
+                    </div>
+                    <div class="report-card">
+                        <div class="report-card-header">
+                            <h3>Agendamentos</h3>
+                            <span class="icon">📅</span>
+                        </div>
+                        <div class="report-card-value">342</div>
+                        <div class="report-card-footer">+8% em relação ao mês anterior</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add Expense -->
+    <div id="expense-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Despesa</h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <form id="expense-form">
+                <div class="form-group">
+                    <label for="expense-description">Descrição</label>
+                    <input type="text" id="expense-description" required>
+                </div>
+                <div class="form-group">
+                    <label for="expense-category">Categoria</label>
+                    <select id="expense-category" required>
+                        <option value="Aluguel">Aluguel</option>
+                        <option value="Salários">Salários</option>
+                        <option value="Produtos">Produtos</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-value">Valor (R$)</label>
+                    <input type="number" id="expense-value" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="expense-type">Tipo</label>
+                    <select id="expense-type" required>
+                        <option value="Única">Única</option>
+                        <option value="Parcelada">Parcelada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-date">Data</label>
+                    <input type="date" id="expense-date" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
