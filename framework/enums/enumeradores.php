@@ -37,3 +37,38 @@ enum PaymentType: int
         };
     }
 }
+
+enum Recurrence: int
+{
+    case Single = 1;
+    case Installments = 2;
+
+    public function getDescription(): string
+    {
+        return match ($this) {
+            Recurrence::Single => "Despesa única",
+            Recurrence::Installments => "Despesa parcelada",
+        };
+    }
+}
+
+enum ExpenseStatus: int
+{
+    case Paid = 1;
+    case Pending = 2;
+    case Scheduled = 3;
+    case Overdue = 4;
+    case InstallmentsRemaining = 5;
+
+    public function getDescription(): string
+    {
+        return match ($this) {
+            ExpenseStatus::Paid => "Paga",
+            ExpenseStatus::Pending => "Pendente de pagamento",
+            ExpenseStatus::Scheduled => "Pagamento agendado",
+            ExpenseStatus::Overdue => "Pagamento atrasado",
+            ExpenseStatus::InstallmentsRemaining => "Faltam parcelas",
+        };
+    }
+}
+
